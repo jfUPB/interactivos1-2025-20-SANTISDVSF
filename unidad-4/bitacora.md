@@ -87,7 +87,7 @@ var myp5 = new p5(sketch);
 
 ```
 
-[Enlace a la aplicación modificada](URL)
+[Enlace a la aplicación modificada](URL) https://editor.p5js.org/SANTISDVSF/sketches/T87WalDHh
 
 Código modificado:
 
@@ -98,6 +98,7 @@ Código modificado:
 ## Video
 
 [Video demostratativo](URL)
+
 
 
 

@@ -93,11 +93,170 @@ Código modificado:
 
 ``` js
 
+/****************************************************
+ * M_1_2_01 (orden vs random) + micro:bit (p5.webserial)
+ * - Fader (antes mouseX): ahora acelerómetro X del micro:bit
+ * - Botón A: nueva semilla (como click en el original)
+ * - Botón B (al soltar): cambia color
+ * - SIN simulación (requiere micro:bit real)
+ ****************************************************/
+
+// ------- Serial + estados -------
+let port, connectBtn, connectionInitialized = false, microBitConnected = false;
+
+const STATES = {
+  WAIT_MICROBIT_CONNECTION: "WAIT_MICROBIT_CONNECTION",
+  RUNNING: "RUNNING",
+};
+let appState = STATES.WAIT_MICROBIT_CONNECTION;
+
+// Sensores
+let microBitX = 0, microBitY = 0;
+let microBitA = false, microBitB = false;
+let prevA = false, prevB = false;
+
+// ------- Parámetros del sketch original -------
+let actRandomSeed = 0;
+let count = 150;
+let dotColor;
+
+// Util: -1024..1024 -> 0..1
+function tilt01(v) {
+  return constrain(map(v, -1024, 1024, 0, 1), 0, 1);
+}
+
+function setup() {
+  // Igual que el original (800x800); puedes usar windowWidth/Height si prefieres
+  createCanvas(800, 800);
+  cursor(CROSS);
+  noStroke();
+  dotColor = color(0, 130, 164); // color inicial del ejemplo
+
+  // WebSerial
+  port = createSerial();
+  connectBtn = createButton("Connect to micro:bit");
+  connectBtn.position(12, 12);
+  connectBtn.mousePressed(() => {
+    if (!port.opened()) {
+      port.open("MicroPython", 115200);
+      connectionInitialized = false;
+    } else {
+      port.close();
+    }
+  });
+}
+
+function updateEdges(newA, newB) {
+  // A PRESSED -> nueva semilla (equivale a click en el original)
+  if (newA && !prevA) {
+    actRandomSeed = random(100000);
+  }
+  // B RELEASED -> cambiar color
+  if (!newB && prevB) {
+    dotColor = color(random(255), random(255), random(255));
+  }
+  prevA = newA;
+  prevB = newB;
+}
+
+function draw() {
+  // ----- gestión de puerto -----
+  if (!port.opened()) {
+    connectBtn.html("Connect to micro:bit");
+    microBitConnected = false;
+  } else {
+    connectBtn.html("Disconnect");
+    microBitConnected = true;
+
+    if (!connectionInitialized) {
+      port.clear();
+      connectionInitialized = true;
+    }
+    if (port.availableBytes() > 0) {
+      let line = port.readUntil("\n");
+      if (line) {
+        const vals = line.trim().split(",");
+        if (vals.length === 4) {
+          microBitX = int(vals[0]);
+          microBitY = int(vals[1]); // no lo usamos aquí, pero lo dejamos por claridad
+          microBitA = vals[2].toLowerCase() === "true";
+          microBitB = vals[3].toLowerCase() === "true";
+          updateEdges(microBitA, microBitB);
+        }
+      }
+    }
+  }
+
+  // ----- máquina de estados -----
+  switch (appState) {
+    case STATES.WAIT_MICROBIT_CONNECTION:
+      if (microBitConnected) {
+        background(255);
+        appState = STATES.RUNNING;
+      } else {
+        // pantalla de espera
+        background(20);
+        fill(240);
+        noStroke();
+        textAlign(CENTER, CENTER);
+        textSize(16);
+        text("Conecta el micro:bit y pulsa el botón", width/2, height/2);
+      }
+      break;
+
+    case STATES.RUNNING:
+      if (!microBitConnected) {
+        appState = STATES.WAIT_MICROBIT_CONNECTION;
+        break;
+      }
+
+      // --------- Dibujo (igual al original, pero con fader desde micro:bit) ---------
+      background(255);
+
+      // faderX era mouseX/width; ahora va con microBitX
+      const faderX = tilt01(microBitX); // 0..1
+
+      randomSeed(actRandomSeed);
+      const angle = radians(360 / count);
+      fill(dotColor);
+
+      for (let i = 0; i < count; i++) {
+        // posiciones aleatorias
+        const randomX = random(0, width);
+        const randomY = random(0, height);
+        // posiciones en círculo
+        const circleX = width / 2 + cos(angle * i) * 300;
+        const circleY = height / 2 + sin(angle * i) * 300;
+        // interpolación
+        const x = lerp(randomX, circleX, faderX);
+        const y = lerp(randomY, circleY, faderX);
+        ellipse(x, y, 11, 11);
+      }
+
+      break;
+  }
+}
+
+// ----- teclas: como el original -----
+function keyReleased() {
+  if (key === 's' || key === 'S') {
+    const ts = year() + nf(month(), 2) + nf(day(), 2) + "_" + nf(hour(), 2) + nf(minute(), 2) + nf(second(), 2);
+    saveCanvas(ts, 'png');
+  }
+}
+
+function windowResized() {
+  // Si usas 800x800, no es necesario; si cambias a windowWidth/Height, descomenta:
+  // resizeCanvas(windowWidth, windowHeight);
+}
+
+
 ```
 
 ## Video
 
 [Video demostratativo](URL)
+
 
 
 

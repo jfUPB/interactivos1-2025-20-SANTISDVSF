@@ -95,10 +95,12 @@ Código modificado:
 
 /****************************************************
  * M_1_2_01 (orden vs random) + micro:bit (p5.webserial)
- * - Fader (antes mouseX): ahora acelerómetro X del micro:bit
- * - Botón A: nueva semilla (como click en el original)
- * - Botón B (al soltar): cambia color
- * - SIN simulación (requiere micro:bit real)
+ * Sensores (4/4):
+ *   - xValue  -> fader random ↔ círculo
+ *   - yValue  -> tamaño de los puntos (ellipse)
+ *   - button A (press)    -> nueva semilla (como mousePressed original)
+ *   - button B (release)  -> cambiar color
+ * SIN simulación: requiere micro:bit real
  ****************************************************/
 
 // ------- Serial + estados -------
@@ -126,7 +128,7 @@ function tilt01(v) {
 }
 
 function setup() {
-  // Igual que el original (800x800); puedes usar windowWidth/Height si prefieres
+  // Igual que el original (800x800)
   createCanvas(800, 800);
   cursor(CROSS);
   noStroke();
@@ -178,7 +180,7 @@ function draw() {
         const vals = line.trim().split(",");
         if (vals.length === 4) {
           microBitX = int(vals[0]);
-          microBitY = int(vals[1]); // no lo usamos aquí, pero lo dejamos por claridad
+          microBitY = int(vals[1]);
           microBitA = vals[2].toLowerCase() === "true";
           microBitB = vals[3].toLowerCase() === "true";
           updateEdges(microBitA, microBitB);
@@ -210,11 +212,15 @@ function draw() {
         break;
       }
 
-      // --------- Dibujo (igual al original, pero con fader desde micro:bit) ---------
+      // --------- Dibujo (igual al original, con fader desde micro:bit) ---------
       background(255);
 
-      // faderX era mouseX/width; ahora va con microBitX
+      // faderX: antes mouseX/width; ahora microBitX
       const faderX = tilt01(microBitX); // 0..1
+
+      // tamaño de punto desde yValue (-1024..1024) -> 5..25 px
+      const dotSizeBase = map(microBitY, -1024, 1024, 5, 25);
+      const dotSize = constrain(dotSizeBase, 3, 30); // por si acaso
 
       randomSeed(actRandomSeed);
       const angle = radians(360 / count);
@@ -230,9 +236,8 @@ function draw() {
         // interpolación
         const x = lerp(randomX, circleX, faderX);
         const y = lerp(randomY, circleY, faderX);
-        ellipse(x, y, 11, 11);
+        ellipse(x, y, dotSize, dotSize);
       }
-
       break;
   }
 }
@@ -246,9 +251,11 @@ function keyReleased() {
 }
 
 function windowResized() {
-  // Si usas 800x800, no es necesario; si cambias a windowWidth/Height, descomenta:
+  // Si usas 800x800 fijo, no hace falta redimensionar.
+  // Si cambias a pantalla completa, usa:
   // resizeCanvas(windowWidth, windowHeight);
 }
+
 
 
 ```
@@ -256,6 +263,7 @@ function windowResized() {
 ## Video
 
 [Video demostratativo](URL)
+
 
 
 

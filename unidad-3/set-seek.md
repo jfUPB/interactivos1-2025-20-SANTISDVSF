@@ -2,10 +2,6 @@
 
 ## 🔎 Fase: Set + Seek
 
-# Unidad 3
-
-## 🔎 Fase: Set + Seek
-
 ### Modelado de la bomba 3.0
 
 Modelo — Bomba 3.0 - Máquina de Estados Finitos (FSM)

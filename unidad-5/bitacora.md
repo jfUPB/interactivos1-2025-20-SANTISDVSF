@@ -63,3 +63,70 @@ Si A cambia de false a true → A pressed; si B cambia de true a false → B rel
 
 
 ### Actividad 2
+
+<img width="1366" height="822" alt="image" src="https://github.com/user-attachments/assets/9e3e8fd4-9cad-4a18-8609-5d0b4a0f2093" />
+
+<img width="1352" height="815" alt="image" src="https://github.com/user-attachments/assets/3845a7b2-ed1e-49d2-b23e-184cc66c7121" />
+
+Se observa cómo se generan 2 enteros de 16 bits y 2 bytes de estados, listos para enviarse por el puerto serial en formato binario.
+El hexdump confirma que el protocolo binario genera un paquete compacto de 6 bytes (LEN: 6). La interpretación es:
+
+01 f4 → 500 en big-endian
+
+02 0c → 524 en big-endian
+
+01 → botón A = presionado
+
+00 → botón B = no presionado
+
+Esto demuestra que el formato >2h2B funciona correctamente y elimina la necesidad de enviar un delimitador como en ASCII.
+
+En hardware real, en modo Texto, estos bytes aparecerían como caracteres raros (“basura”), pero en el simulador los imprimimos en hexadecimal para verificar.
+
+
+https://youtu.be/tZIWI5an55M
+
+En esta fase modifiqué el programa del micro:bit para que los datos binarios no se envíen continuamente, sino únicamente cuando ocurre un evento (por ejemplo, la detección de un gesto shake o la pulsación del botón A). En este caso es el boton a ya que como no tengo el microbit no puedo hacerlo con shake pero basicamente es lo mismo.
+
+El paquete se envía solo bajo condición de evento.
+
+El tamaño del paquete sigue siendo 6 bytes fijos (LEN: 6).
+
+La estructura de datos binarios (>2h2B) se mantiene constante e independiente de la frecuencia de envío.
+
+<img width="1362" height="912" alt="image" src="https://github.com/user-attachments/assets/19e9b567-28c8-489c-9a60-b1bf4e9b06d3" />
+
+<img width="1357" height="913" alt="image" src="https://github.com/user-attachments/assets/32b3ed9f-bf88-4215-bd45-a1ca3ec9849a" />
+
+En este experimento configuré el micro:bit para que enviara dos representaciones del mismo paquete de datos: primero en formato binario (struct.pack('>2h2B')) y luego en formato ASCII (cadena separada por comas y terminada en \n).
+
+<img width="1367" height="914" alt="image" src="https://github.com/user-attachments/assets/e9f12591-addd-438d-a99f-2fd383a1ccac" />
+
+<img width="1341" height="921" alt="image" src="https://github.com/user-attachments/assets/dc381edd-884e-404c-99e5-46ee6b08c291" />
+
+En esta parte realicé pruebas con valores negativos en el eje X del acelerómetro, por ejemplo -45 y -300. El objetivo fue observar cómo se representan estos números cuando se envían en formato binario con struct.pack('>2h2B').
+
+Esta evidencia confirma que el formato binario maneja correctamente tanto números positivos como negativos. En la transmisión, el receptor debe interpretar los 2 bytes como un entero con signo para recuperar el valor real.
+
+### Actividad 3
+
+
+<img width="1753" height="800" alt="image" src="https://github.com/user-attachments/assets/49a64da3-ca4a-4f92-9989-be5f9833c0ed" />
+
+En el lector binario sin framing logré decodificar correctamente el primer paquete (x=500, y=524, A=1, B=0).
+Sin embargo, al llegar bytes extra o basura, la lectura se desincronizó y los valores aparecieron corruptos (x=39304, y=30465, A=244, B=2).
+
+<img width="1835" height="899" alt="image" src="https://github.com/user-attachments/assets/a31d82f0-47a4-4cd4-911f-8e5ab14678b9" />
+
+En esta prueba modifiqué el protocolo para que cada paquete binario incluyera un byte de longitud (LEN=6) al inicio.
+De esta forma el receptor en p5.js pudo identificar el inicio y el fin de cada paquete y leer siempre la cantidad exacta de bytes. El framing eliminó el problema de desincronización observado en la prueba anterior. Aunque existan bytes extra o errores en el flujo, el receptor puede recuperar la alineación al leer el encabezado LEN. Este mecanismo hace al protocolo binario más confiable.
+
+Al leer los datos binarios sin framing, observé que la llegada de bytes basura o desalineados hacía que la interpretación de los paquetes se corrompiera. Esto generaba valores incoherentes en la consola, demostrando un problema de desincronización.
+
+Con la implementación de un protocolo de framing (encabezado con el byte de longitud LEN=6), el receptor pudo detectar el inicio exacto de cada paquete y leer siempre la cantidad correcta de bytes. Esto resolvió el problema y permitió interpretar correctamente los valores de X, Y y los botones.
+
+El framing es fundamental en protocolos binarios porque asegura la correcta reconstrucción de los paquetes.
+
+
+
+

@@ -42,3 +42,5 @@ En esta simulación inyecté los valores directamente para generar las pruebas y
 ## ¿Cómo se generan los eventos A pressed y B released?
 Si A cambia de false a true → A pressed; si B cambia de true a false → B released
 
+
+### Actividad 2

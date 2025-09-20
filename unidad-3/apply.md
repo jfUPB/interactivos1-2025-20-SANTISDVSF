@@ -284,4 +284,43 @@ sleep(10)
 ````
 
 
+## Acitivad 8
+
+¿Qué es una máquina de estados?
+Como lo dice la palabra es un sistema que tiene estados, reacciona a eventos, hace acciones y cambia su estado final.
+
+Concurrencia:
+sirve porque puedo manejar varias cosas a la vez sin que se bloquee el programa.
+
+Nueva funcionalidad:
+divide el contador en dos y sigue contando
+
+Vector de prueba:
+Sirve para comprobar que todo funciona.
+
+Más difícil: pasar del diagrama al código, porque había que organizar bien dónde van los eventos y las acciones.
+
+Bug que tuve: el contador bajaba mal porque el timer se duplicaba. Lo arreglé pensando en el evento TIMER y controlando bien el lastTick.
+
+Estrategia: empecé con la versión básica y poco a poco le fui agregando funciones (password, serial, etc.).
+
+Dónde aplicarlo: en un mini juego, menús de una app, un semáforo real o un robot con sensores.
+
+## Acitivad 9
+
+Continuar: seguir con la idea de eventos genéricos y timers sin bloqueos
+
+Dejar: a veces se mezclaba lógica con dibujo en p5.js
+
+Empezar: un ejemplo extra de vectores de prueba desde el inicio hubiera ayudado mucho.
+
+Ritmo/dificultad: le doy 4 de 5, no es imposible pero sí exige pensar diferente
+
+Comentario final: el mejor momento fue entender que no importa si el evento viene del teclado o del micro:bit: la bomba reacciona igual.
+
+
+
+
+
+
 

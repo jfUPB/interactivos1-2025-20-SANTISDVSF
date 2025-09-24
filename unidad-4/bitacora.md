@@ -3,7 +3,7 @@
 
 ## Código
 
-[[Enlace a la aplicación a modificar](URL)](http://www.generative-gestaltung.de/2/sketches/?02_M/M_1_2_01)
+[[Enlace a la aplicación a modificar](URL)][(http://www.generative-gestaltung.de/2/sketches/?02_M/M_1_2_01)](http://www.generative-gestaltung.de/2/sketches/?01_P/P_2_1_2_01)
 
 Código a modificar:
 
@@ -223,6 +223,7 @@ function serialEvent(){
 ## Video
 
 [Video demostratativo][ https://youtu.be/xqK1A7_DlEw](https://youtu.be/N9Z4aeJUogo)
+
 
 
 

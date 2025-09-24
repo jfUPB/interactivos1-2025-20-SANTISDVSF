@@ -85,236 +85,137 @@ function keyReleased() {
   if (key == 's' || key == 'S') saveCanvas(gd.timestamp(), 'png');
 }
 
+
 ```
 
-[Enlace a la aplicación modificada](URL) https://editor.p5js.org/SANTISDVSF/sketches/T87WalDHh
+[Enlace a la aplicación modificada](URL) [https://editor.p5js.org/SANTISDVSF/sketches/T87WalDHh](https://editor.p5js.org/SANTISDVSF/sketches/m5LsUyjLe)
 
 Código modificado:
 
 ``` js
 
-// ====== Variables del sketch (tomado y adaptado del ejemplo) ======
-let c;
-let lineModuleSize = 0;
-let angle = 0;
-let angleSpeed = 1;
-const lineModule = [];
-let lineModuleIndex = 0;
-let clickPosX = 0;
-let clickPosY = 0;
+'use strict';
 
-// ====== Soporte WebSerial (ASCII, coma-separado, fin de línea \n) ======
-let port;
-let connectBtn;
-let connectionInitialized = false;
-let microBitConnected = false;
+/**
+ * Mod de P_2_1_2_01 para micro:bit
+ * Mapear:
+ *   1) mouseX  -> acelerómetro X
+ *   2) mouseY  -> acelerómetro Y
+ *   3) click   -> botón A
+ *   4) 'S'     -> botón B
+ *
+ * micro:bit envía: xValue,yValue,aState,bState\n
+ */
 
-// FSM
-const STATES = {
-  WAIT_MICROBIT_CONNECTION: "WAIT_MICROBIT_CONNECTION",
-  RUNNING: "RUNNING",
-};
-let appState = STATES.WAIT_MICROBIT_CONNECTION;
+let tileCount = 20;
+let actRandomSeed = 0;
+let circleAlpha = 130;
+let circleColor;
 
-// Datos recibidos del micro:bit
-let microBitX = 0;
-let microBitY = 0;
-let microBitAState = false;
-let microBitBState = false;
-let prevmicroBitAState = false;
-let prevmicroBitBState = false;
+// datos del micro:bit
+let mbX = 0, mbY = 0, mbA = false, mbB = false;
+let prevA = false, prevB = false;
+let connected = false;
 
-// === MODO DEMO (para casa sin micro:bit). Pon DEMO=true para simular datos. ===
-const DEMO = false;
-let demoT = 0;
-
-function preload() {
-  lineModule[1] = loadImage("02.svg");
-  lineModule[2] = loadImage("03.svg");
-  lineModule[3] = loadImage("04.svg");
-  lineModule[4] = loadImage("05.svg");
-}
+// serial
+let serial;
+let readoutEl, statusEl, dotEl;
 
 function setup() {
-  createCanvas(windowWidth, windowHeight);
-  background(255);
+  createCanvas(600, 600);
+  noFill();
+  circleColor = color(0, 0, 0, circleAlpha);
 
-  // Serial
-  port = createSerial();
-  connectBtn = createButton("Connect to micro:bit");
-  connectBtn.position(10, 10);
-  connectBtn.mousePressed(connectBtnClick);
+  // HUD
+  readoutEl = document.getElementById('readout');
+  statusEl  = document.getElementById('status');
+  dotEl     = document.getElementById('dot');
 
-  // Colores por defecto
-  c = color(181, 157, 0);
-  noCursor();
-}
+  let btn = document.getElementById('btnConnect');
+  if (btn) btn.onclick = requestSerial;
 
-function windowResized() {
-  resizeCanvas(windowWidth, windowHeight);
-}
-
-function connectBtnClick() {
-  if (!port.opened()) {
-    // “MicroPython” + 115200 como en la guía
-    port.open("MicroPython", 115200);
-    connectionInitialized = false;
-  } else {
-    port.close();
-  }
-}
-
-function updateButtonStates(newAState, newBState) {
-  // Evento "pressed" de A (subida)
-  if (newAState === true && prevmicroBitAState === false) {
-    lineModuleSize = random(50, 160);  // tamaño nuevo
-    clickPosX = microBitX;             // guardar posición de “click”
-    clickPosY = microBitY;
-    // print("A pressed");
-  }
-  // Evento "released" de B (bajada)
-  if (newBState === false && prevmicroBitBState === true) {
-    c = color(random(255), random(255), random(255), random(80, 100));
-    // print("B released");
-  }
-  prevmicroBitAState = newAState;
-  prevmicroBitBState = newBState;
+  // Web Serial
+  serial = new p5.WebSerial();
+  serial.on('connected', () => console.log('WebSerial OK'));
+  serial.on('noport', () => setStatus(false, 'sin puerto'));
+  serial.on('portavailable', openPort);
+  serial.on('requesterror', () => setStatus(false, 'error'));
+  serial.on('close', () => setStatus(false, 'cerrado'));
+  serial.on('data', serialEvent);
+  serial.getPorts();
 }
 
 function draw() {
-  // --------- Botón y estado de conexión ----------
-  if (!port.opened()) {
-    connectBtn.html("Connect to micro:bit");
-    microBitConnected = false;
-  } else {
-    microBitConnected = true;
-    connectBtn.html("Disconnect");
+  translate(width / tileCount / 2, height / tileCount / 2);
+  background(255);
+  randomSeed(actRandomSeed);
 
-    // Limpiar buffer SOLO una vez al abrir
-    if (!connectionInitialized) {
-      port.clear();
-      connectionInitialized = true;
-    }
+  // usa micro:bit si está conectado, si no usa mouse
+  const ctrlX = connected ? map(mbX, -1024, 1024, 0, width)  : mouseX;
+  const ctrlY = connected ? map(mbY, -1024, 1024, 0, height) : mouseY;
 
-    // Leer paquetes completos “hasta \n”
-    if (port.availableBytes() > 0) {
-      let data = port.readUntil("\n");
-      if (data) {
-        data = data.trim();               // quitar \n
-        const values = data.split(",");   // x,y,A,B
-        if (values.length === 4) {
-          microBitX = int(values[0]) + windowWidth / 2;
-          microBitY = int(values[1]) + windowHeight / 2;
-          microBitAState = values[2].toLowerCase() === "true";
-          microBitBState = values[3].toLowerCase() === "true";
-          updateButtonStates(microBitAState, microBitBState);
-        } else {
-          // Paquete parcial (pasa cuando el frame cae entre envíos); ignorar
-          // print("Paquete incompleto (no 4 valores).");
-        }
-      }
+  stroke(circleColor);
+  strokeWeight(ctrlY / 60);
+
+  for (let gridY = 0; gridY < tileCount; gridY++) {
+    for (let gridX = 0; gridX < tileCount; gridX++) {
+      const posX = (width / tileCount) * gridX;
+      const posY = (height / tileCount) * gridY;
+
+      const shiftX = random(-ctrlX, ctrlX) / 20;
+      const shiftY = random(-ctrlX, ctrlX) / 20;
+
+      ellipse(posX + shiftX, posY + shiftY, ctrlY / 15, ctrlY / 15);
     }
   }
 
-  // --------- DEMO (sin micro:bit) ---------
-  if (DEMO) {
-    // trayectoria en 8 con “click” cada cierto tiempo y color aleatorio al soltar
-    demoT += 0.02;
-    microBitX = windowWidth / 2 + cos(demoT) * 200;
-    microBitY = windowHeight / 2 + sin(demoT * 2) * 120;
-    const a = (floor(demoT * 10) % 40) < 10;   // A true por ráfagas
-    const b = (floor(demoT * 10) % 40) === 20; // B se “suelta” cada tanto
-    microBitAState = a;
-    microBitBState = b;
-    updateButtonStates(microBitAState, microBitBState);
-    microBitConnected = true; // para que pase a RUNNING
+  // botón A => seed nueva (como click)
+  if (mbA && !prevA) actRandomSeed = random(100000);
+
+  // botón B => guardar imagen (como tecla S)
+  if (mbB && !prevB) {
+    const ts = `${year()}${nf(month(),2)}${nf(day(),2)}_${nf(hour(),2)}${nf(minute(),2)}${nf(second(),2)}`;
+    saveCanvas(ts, 'png');
   }
 
-  // --------- FSM por frame ---------
-  switch (appState) {
-    case STATES.WAIT_MICROBIT_CONNECTION:
-      // No dibujamos nada hasta conectar
-      if (microBitConnected === true) {
-        // Preparar estado
-        strokeWeight(0.75);
-        c = color(181, 157, 0);
-        noCursor();
-        appState = STATES.RUNNING;
-      }
-      break;
+  prevA = mbA;
+  prevB = mbB;
 
-    case STATES.RUNNING:
-      // Si se pierde conexión, regresar a espera
-      if (!microBitConnected && !DEMO) {
-        cursor();
-        appState = STATES.WAIT_MICROBIT_CONNECTION;
-        break;
-      }
-
-      // “Dibujo cuando A está presionado” (igual que el mouseDown del original)
-      if (microBitAState === true) {
-        let x = microBitX;
-        let y = microBitY;
-
-        // Mantén SHIFT para forzar horizontal/vertical, como el original
-        if (keyIsPressed && keyCode === SHIFT) {
-          if (abs(clickPosX - x) > abs(clickPosY - y)) {
-            y = clickPosY;
-          } else {
-            x = clickPosX;
-          }
-        }
-
-        push();
-        translate(x, y);
-        rotate(radians(angle));
-        if (lineModuleIndex !== 0) {
-          tint(c);
-          image(lineModule[lineModuleIndex], 0, 0, lineModuleSize, lineModuleSize);
-        } else {
-          stroke(c);
-          line(0, 0, lineModuleSize, lineModuleSize);
-        }
-        angle += angleSpeed;
-        pop();
-      }
-      break;
-  }
+  // HUD
+  if (readoutEl) readoutEl.textContent = `x:${mbX} y:${mbY} | A:${mbA?1:0} B:${mbB?1:0}`;
 }
 
-// ====== Controles de teclado (del ejemplo original) ======
-function keyPressed() {
-  if (keyCode === UP_ARROW)   lineModuleSize += 5;
-  if (keyCode === DOWN_ARROW) lineModuleSize -= 5;
-  if (keyCode === LEFT_ARROW) angleSpeed -= 0.5;
-  if (keyCode === RIGHT_ARROW)angleSpeed += 0.5;
-}
-
+// compatibilidad con mouse/teclado
+function mousePressed() { actRandomSeed = random(100000); }
 function keyReleased() {
-  if (key === "s" || key === "S") {
-    const ts = year() + nf(month(), 2) + nf(day(), 2) + "_" + nf(hour(), 2) + nf(minute(), 2) + nf(second(), 2);
-    saveCanvas(ts, "png");
+  if (key === 's' || key === 'S') {
+    const ts = `${year()}${nf(month(),2)}${nf(day(),2)}_${nf(hour(),2)}${nf(minute(),2)}${nf(second(),2)}`;
+    saveCanvas(ts, 'png');
   }
-  if (keyCode === DELETE || keyCode === BACKSPACE) background(255);
+}
 
-  // invertir sentido
-  if (key === "d" || key === "D") {
-    angle += 180;
-    angleSpeed *= -1;
-  }
+// serial helpers
+function requestSerial() { serial.requestPort(); }
+function openPort() { serial.open({ baudRate: 115200 }); setStatus(true, 'conectado'); }
+function setStatus(ok, label){
+  connected = !!ok;
+  if (statusEl) statusEl.textContent = label || (ok?'conectado':'desconectado');
+  if (dotEl) dotEl.classList.toggle('ok', ok);
+}
 
-  // colores por defecto 1..4
-  if (key === "1") c = color(181, 157, 0);
-  if (key === "2") c = color(0, 130, 164);
-  if (key === "3") c = color(87, 35, 129);
-  if (key === "4") c = color(197, 0, 123);
+function serialEvent(){
+  const line = serial.readLine();
+  if (!line) return;
+  const parts = line.trim().split(','); // x,y,A,B
+  if (parts.length !== 4) return;
 
-  // módulos SVG 5..9
-  if (key === "5") lineModuleIndex = 0;
-  if (key === "6") lineModuleIndex = 1;
-  if (key === "7") lineModuleIndex = 2;
-  if (key === "8") lineModuleIndex = 3;
-  if (key === "9") lineModuleIndex = 4;
+  mbX = parseInt(parts[0], 10);
+  mbY = parseInt(parts[1], 10);
+
+  const rawA = parts[2].trim();
+  const rawB = parts[3].trim();
+  mbA = (rawA === 'True' || rawA === 'true' || rawA === '1');
+  mbB = (rawB === 'True' || rawB === 'true' || rawB === '1');
 }
 
 ```
@@ -322,6 +223,7 @@ function keyReleased() {
 ## Video
 
 [Video demostratativo][ https://youtu.be/xqK1A7_DlEw](https://youtu.be/N9Z4aeJUogo)
+
 
 
 

@@ -124,3 +124,20 @@ De esta forma el receptor en p5.js pudo identificar el inicio y el fin de cada p
 Al leer los datos binarios sin framing, observé que la llegada de bytes basura o desalineados hacía que la interpretación de los paquetes se corrompiera. Esto generaba valores incoherentes en la consola, demostrando un problema de desincronización.
 
 Con la implementación de un protocolo de framing (encabezado con el byte de longitud LEN=6), el receptor pudo detectar el inicio exacto de cada paquete y leer siempre la cantidad correcta de bytes. Esto resolvió el problema y permitió interpretar correctamente los valores de X, Y y los botones.
+
+
+### Rúbrica – Justificación Personal
+
+1. Profundidad de la indagación → 4.7
+Durante las actividades formulé preguntas que no solo buscaban ejecutar los ejemplos, sino comprender el porqué de los protocolos. Analicé causas de errores como la desincronización, comparé el tamaño real entre ASCII y binario y reflexioné sobre en qué casos convendría un protocolo menos eficiente pero más legible.
+
+2. Calidad de la experimentación → 3.5 
+Reconozco que mi experimentación fue sólida pero limitada porque no pude probar con el micro:bit físico, lo cual habría enriquecido la práctica. Sin embargo, pude compensar esta limitación con el uso del simulador, provoqué errores de desincronización, probé números negativos para verificar representación en complemento a dos, y diseñé un modo evento para verificar que los paquetes mantenían tamaño constante. Mis experimentos fueron efectivos, pero al no usar hardware real, por eso me pongo esa nota.
+
+3. Análisis y reflexión → 4.5
+En mi bitácora no me limité a describir lo que veía. Por ejemplo, no solo anoté los bytes, sino que expliqué su significado campo por campo. Tambien mostré cómo el framing resolvía la desincronización y lo relacioné con la teoría de delimitación de paquetes. Entonces pienso que el analisis y la reflexion fueron mas alla y por eso el 4.5
+
+4. Apropiación y articulación de conceptos → 4.0 
+Logré explicar con mis propias palabras conceptos clave como framing, struct.pack, representación binaria con signo y la idea de flujo de bytes asíncrono. También comprendí cómo usar DataView en JavaScript para interpretar datos binarios. Sin embargo reconozco que mi articulación aún puede mejorar, en algunos casos me quedé en explicaciones claras pero básicaspor eso me pongo 4.0
+
+NOTA FINAL: 4.1

@@ -25,4 +25,5 @@ En cuanto al comportamiento el círculo del desktop siguió el touch del móvil 
 <img width="540" height="1200" alt="image" src="https://github.com/user-attachments/assets/bd1d20f4-d64e-4dcc-a4c5-6be9f1f917ba" />
 
 
+## ACTIVIDAD 2
 

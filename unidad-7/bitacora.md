@@ -73,6 +73,15 @@ En el escritorio, estoy escuchando: socket.on('touch', (data) => { x = data.x; y
 
 R// El socket.emit se lo mandaría solo al que lo mandó entonces no me sirve. El io.emit se lo mandaría a todos, incluyendo al emisor cosa que no es necesario, y socket.broadcast.emit se lo manda a todos los demás que es justo lo que quiero, que lo reciban los escritorios, no el mismo celular.
 
+Si conectaras dos computadores de escritorio y un móvil a este servidor, y movieras el dedo en el móvil, ¿Quién recibiría el mensaje retransmitido por el servidor? ¿Por qué?
+
+R// Lo recibirian los dos computadores, el celular es el que emite, el servidor reenvía con broadcast (o sea, a todos menos al que emitió). Como los dos que faltan son los escritorios, los dos lo reciben y se mueven.
+
+¿Qué información útil te proporcionan los mensajes console.log en el servidor durante la ejecución?
+
+R// Los logs son las señales de vida del sistema por así decirlo: arranco bien, llegaron los toques, y quién está conectado.
+
+
 
 
 

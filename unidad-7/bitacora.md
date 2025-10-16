@@ -53,4 +53,27 @@ x No es HTTPS por defecto.
 
 ## ACTIVIDAD 3
 
+¿Qué hace express.static('public')?
+
+En pocas palabras: le digo al servidor que sirva todo lo que haya en la carpeta public tal cual.
+Entonces si entro a:
+
+http://localhost:3000/desktop/  me muestra public/desktop/index.html
+
+http://localhost:3000/mobile/ me muestra public/mobile/index.html
+
+¿Cómo viaja un toque del celular hasta el escritorio? ¿Por qué socket.broadcast.emit?
+
+En el celular, cuando muevo el dedo p5 llama touchMoved() y ahí hago: socket.emit('touch', { x, y, t }) que lo que quiere decir es que mando las coordendas al servidor.
+En el servidor (Node), escucho ese mensaje con: socket.on('touch', (data) => { ... }) que significa que recibo las coordenadas.
+El servidor reenvía ese dato a los demás con: socket.broadcast.emit('touch', data) o sea, a todos menos al que lo mandó.
+En el escritorio, estoy escuchando: socket.on('touch', (data) => { x = data.x; y = data.y; }) eso es que actualizo el círculo.
+
+¿Por qué uso socket.broadcast.emit y no io.emit o socket.emit?
+
+R// El socket.emit se lo mandaría solo al que lo mandó entonces no me sirve. El io.emit se lo mandaría a todos, incluyendo al emisor cosa que no es necesario, y socket.broadcast.emit se lo manda a todos los demás que es justo lo que quiero, que lo reciban los escritorios, no el mismo celular.
+
+
+
+
 

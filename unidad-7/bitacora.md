@@ -27,3 +27,20 @@ En cuanto al comportamiento el círculo del desktop siguió el touch del móvil 
 
 ## ACTIVIDAD 2
 
+¿Por qué es necesario Dev Tunnels en este escenario y cómo funciona conceptualmente?
+R// Cuando corro el server me queda en http://localhost:3000, pero localhost solo sirve en el mismo equipo. Si desde el celular intento abrir localhost, el celu busca un servidor en el propio celular, no en mi PC. La IP local (tipo 192.168.1.X) solo sirve si el PC y el celu están en la misma Wi-Fi y sin bloqueos. Como yo quiero que funcione estando en otra red o con datos, uso Dev Tunnels de VS Code: me da una URL pública segura que apunta a mi server local. 
+
+¿Qué hace touchMoved() y por qué uso threshold?
+R// En p5.js, touchMoved() se ejecuta mientras arrastro el dedo sobre la pantalla. Ahí leo las coordenadas mouseX y mouseY y envío esos datos por Socket.IO hacia el servidor.
+Uso un threshold (umbral) para no mandar mensajes por micro movimientos del dedo. Solo envío cuando el cambio es “suficientemente grande”. Eso evita saturar la red y la animación se ve más estable en el computador.
+
+Dev Tunnels:
+- Funciona aunque el celu y el PC estén en redes distintas (hasta con datos).
+- Usa HTTPS y atraviesa firewalls/NAT.
+X La URL es temporal y hay que tener el túnel activo (y sesión iniciada).
+
+IP local (192.168.1.X):
+- Simple si estamos en la misma Wi-Fi.
+❗ No sirve por fuera de la red local y puede bloquearse por firewall.
+❗ No es HTTPS por defecto.
+ 

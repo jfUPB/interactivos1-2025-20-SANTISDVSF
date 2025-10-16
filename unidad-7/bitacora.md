@@ -34,13 +34,14 @@ R// Cuando corro el server me queda en http://localhost:3000, pero localhost sol
 R// En p5.js, touchMoved() se ejecuta mientras arrastro el dedo sobre la pantalla. Ahí leo las coordenadas mouseX y mouseY y envío esos datos por Socket.IO hacia el servidor.
 Uso un threshold (umbral) para no mandar mensajes por micro movimientos del dedo. Solo envío cuando el cambio es “suficientemente grande”. Eso evita saturar la red y la animación se ve más estable en el computador.
 
-Dev Tunnels:
+Dev Tunnels: (Ventajas y desventajas)
 - Funciona aunque el celu y el PC estén en redes distintas (hasta con datos).
 - Usa HTTPS y atraviesa firewalls/NAT.
 X La URL es temporal y hay que tener el túnel activo (y sesión iniciada).
 
-IP local (192.168.1.X):
+IP local (192.168.1.X): (Ventajas y desventajas)
 - Simple si estamos en la misma Wi-Fi.
-❗ No sirve por fuera de la red local y puede bloquearse por firewall.
-❗ No es HTTPS por defecto.
+x No sirve por fuera de la red local y puede bloquearse por firewall.
+x No es HTTPS por defecto.
  
+

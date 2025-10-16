@@ -36,12 +36,17 @@ Uso un threshold (umbral) para no mandar mensajes por micro movimientos del dedo
 
 Dev Tunnels: (Ventajas y desventajas)
 - Funciona aunque el celu y el PC estén en redes distintas (hasta con datos).
+  
 - Usa HTTPS y atraviesa firewalls/NAT.
+  
 X La URL es temporal y hay que tener el túnel activo (y sesión iniciada).
 
 IP local (192.168.1.X): (Ventajas y desventajas)
 - Simple si estamos en la misma Wi-Fi.
+
 x No sirve por fuera de la red local y puede bloquearse por firewall.
+
 x No es HTTPS por defecto.
  
+
 

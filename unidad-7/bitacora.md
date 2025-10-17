@@ -81,6 +81,10 @@ R// Lo recibirian los dos computadores, el celular es el que emite, el servidor 
 
 R// Los logs son las señales de vida del sistema por así decirlo: arranco bien, llegaron los toques, y quién está conectado.
 
+DIAGRAMA 
+
+![Texto](https://github.com/user-attachments/assets/83d5fb2f-e1d2-4f8a-86b7-50385416c696)
+
 
 
 

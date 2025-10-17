@@ -81,6 +81,7 @@ R// Lo recibirian los dos computadores, el celular es el que emite, el servidor 
 
 R// Los logs son las señales de vida del sistema por así decirlo: arranco bien, llegaron los toques, y quién está conectado.
 
+## ACTIVIDAD 4
 DIAGRAMA 
 
 ![Texto](https://github.com/user-attachments/assets/83d5fb2f-e1d2-4f8a-86b7-50385416c696)
@@ -571,6 +572,9 @@ function windowResized(){ resizeCanvas(window.innerWidth, window.innerHeight); }
 <img width="1908" height="937" alt="image" src="https://github.com/user-attachments/assets/91bcf64c-9ed5-47b9-b213-f2eadc613ab8" />
 ![WhatsApp Image 2025-10-16 at 9 58 06 PM (1)](https://github.com/user-attachments/assets/c9432f88-278a-464e-8b25-082f6f3490b5)
 
+## AUTOEVALUACIÓN
+
+Realice conscientemente las 5 actividades propuestas por el profe y organice toda la evidencia en la bitacora, asi que todo quedo completo, por lo tanto mi nota propuesta es un 5.0
 
 
 

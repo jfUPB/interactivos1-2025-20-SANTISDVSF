@@ -569,7 +569,9 @@ function windowResized(){ resizeCanvas(window.innerWidth, window.innerHeight); }
 ````
 
 <img width="1908" height="937" alt="image" src="https://github.com/user-attachments/assets/91bcf64c-9ed5-47b9-b213-f2eadc613ab8" />
-<img width="1908" height="937" alt="image" src="https://github.com/user-attachments/assets/86f025ce-7e9b-4ce4-b35b-955944216095" />
+![WhatsApp Image 2025-10-16 at 9 58 06 PM (1)](https://github.com/user-attachments/assets/c9432f88-278a-464e-8b25-082f6f3490b5)
+
+
 
 
 

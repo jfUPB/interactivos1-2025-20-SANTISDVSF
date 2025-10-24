@@ -1,4 +1,13 @@
 
 # Evidencias de la unidad 8
 
+### REFERENTES VISUALES
+
+<img width="1280" height="426" alt="image" src="https://github.com/user-attachments/assets/76364177-5b72-4fcb-a913-799a169aeaeb" />
+<img width="640" height="640" alt="image" src="https://github.com/user-attachments/assets/71a3ad90-d876-4e42-8f98-0a72bd0e0262" />
+<img width="600" height="400" alt="image" src="https://github.com/user-attachments/assets/44d8beb5-a9e5-4634-81bb-3a632e499233" />
+
+El concepto es como un tipo de "Tristeza elegante" en dorado sobre negro.
+
+
 

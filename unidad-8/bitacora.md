@@ -23,3 +23,8 @@ Micro:bit:
 Inclinación → dirección del flujo de partículas 
 Botón A → La figura se fragmenta
 Botón B → Las partículas se unen lentamente).
+
+### BOCETOS
+
+### DIAGRAMA DE COMUNICACIÓN
+

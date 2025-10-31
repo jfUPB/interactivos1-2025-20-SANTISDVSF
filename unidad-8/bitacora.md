@@ -11,6 +11,16 @@
 
 El concepto es como un tipo de "Tristeza elegante" en dorado sobre negro. Un corazón dorado que late lentamente y se fragmenta con el ritmo de la canción. A medida que la música sube, los fragmentos flotan y vuelven a unirse.
 
+Estados visuales:
+
+Latido: corazón completo con un pulso suave
+
+Fractura: piezas trianguladas salen en cámara lenta
+
+Reunión: las piezas se atraen al centro hasta recomponer el corazón.
+
+Vapores: humo dorado fino que emana, líneas orbitan como trayectorias de recuerdos.
+
 ### Control con móvil y micro:bit
 
 Celular:
@@ -29,5 +39,6 @@ Botón B → Las partículas se unen lentamente).
 ### BOCETOS
 
 ### DIAGRAMA DE COMUNICACIÓN
+
 
 

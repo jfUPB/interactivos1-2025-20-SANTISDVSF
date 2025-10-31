@@ -38,7 +38,23 @@ Botón B → Las partículas se unen lentamente).
 
 ### BOCETOS
 
-### DIAGRAMA DE COMUNICACIÓN
+BOCETO MOVIL
+![WhatsApp Image 2025-10-31 at 6 38 35 AM](https://github.com/user-attachments/assets/914df4e6-ac8c-4d13-a246-d69478aa614c)
+
+BOCETO PC
+![WhatsApp Image 2025-10-31 at 6 39 04 AM](https://github.com/user-attachments/assets/82addfcf-f2ee-4274-9257-4ea213bfe7fb)
+
+BOCETO MICROBIT
+![WhatsApp Image 2025-10-31 at 6 38 53 AM](https://github.com/user-attachments/assets/b0cf98f6-c009-45f3-918d-735ed85059da)
+
+### DIAGRAMA
+
+![WhatsApp Image 2025-10-31 at 6 38 42 AM](https://github.com/user-attachments/assets/cbf9d85f-c854-4d14-83b7-f71b53c274f3)
+
+
+
+
+
 
 
 
